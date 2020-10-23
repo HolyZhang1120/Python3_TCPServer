@@ -17,7 +17,8 @@ from io import BytesIO
 import os
 
 Send_num = 5*1024
-Flag = 1
+#Flag = 1
+
 
 def ini_data(i,data_loc,data,size): #i=1,读，i=0,写;data_loc:文件指针位置；data：数据；size:读文件字节
     save_path = 'Storage.ini'
@@ -29,6 +30,25 @@ def ini_data(i,data_loc,data,size): #i=1,读，i=0,写;data_loc:文件指针位�
         elif i == 1:
             return f.read(size)
 
+def upgrade_flag(filepath):
+    crc32_file = crc32(filepath)
+    file_size = ReadFileSize(filepath)
+    file_size = struct.pack('>i',file_size).hex()
+    crc32_file1 = ini_data(1,16,0,4) #第16位开始
+    crc32_file1 = str(binascii.b2a_hex(crc32_file1))[2:-1]
+    file_size1 = ini_data(1,20,0,4)
+    file_size1 = str(binascii.b2a_hex(file_size1))[2:-1]
+    # print(crc32_file)
+    # print(file_size)
+    # print(crc32_file1)
+    # print(file_size1)
+    if (crc32_file == crc32_file1) & (file_size == file_size1) :
+        Flag =0
+    else :
+        Flag = 1
+        ini_data(0,16,crc32_file,4)
+        ini_data(0,20,file_size,4)
+
 def upgrade_function(data,size,BUFSIZ):
   msg = '00'
   if (data[2] == 'a') & (data[3] == 'b') :    #0xAB  请求升级
@@ -38,9 +58,11 @@ def upgrade_function(data,size,BUFSIZ):
      data1 = str(data)[0:6]
      data1 = crc2hex(data1)
      if data1 == crc11 :   #下发升级包大小
+        upgrade_flag(BUFSIZ)
         if Flag == 1:
             msg1 = b'\xAA\xAB'
         else: msg1 = b'\xAA\xAD' #获取结构化事件戳
+        print(Flag)
         msg1 = str(binascii.b2a_hex(msg1))[2:-1]
         msg2 = ReadFileSize(BUFSIZ)
         #print(msg2)
