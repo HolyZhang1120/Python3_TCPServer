@@ -17,7 +17,8 @@ from io import BytesIO
 import os
 
 Send_num = 5*1024
-#Flag = 1
+global Flag
+Flag = 0
 
 
 def ini_data(i,data_loc,data,size): #i=1,读，i=0,写;data_loc:文件指针位置；data：数据；size:读文件字节
@@ -31,26 +32,30 @@ def ini_data(i,data_loc,data,size): #i=1,读，i=0,写;data_loc:文件指针位�
             return f.read(size)
 
 def upgrade_flag(filepath):
-    crc32_file = crc32(filepath)
+    global Flag
+    crc32_file = crc32(filepath).lower()
     file_size = ReadFileSize(filepath)
     file_size = struct.pack('>i',file_size).hex()
     crc32_file1 = ini_data(1,16,0,4) #第16位开始
     crc32_file1 = str(binascii.b2a_hex(crc32_file1))[2:-1]
     file_size1 = ini_data(1,20,0,4)
     file_size1 = str(binascii.b2a_hex(file_size1))[2:-1]
-    # print(crc32_file)
-    # print(file_size)
-    # print(crc32_file1)
-    # print(file_size1)
+    print(crc32_file)
+    print(file_size)
+    print(crc32_file1)
+    print(file_size1)
     if (crc32_file == crc32_file1) & (file_size == file_size1) :
-        Flag =0
+        Flag = 0
+        print('11')
     else :
-        Flag = 1
         ini_data(0,16,crc32_file,4)
         ini_data(0,20,file_size,4)
+        Flag = 1
+        print('21')
 
 def upgrade_function(data,size,BUFSIZ):
   msg = '00'
+  global Flag
   if (data[2] == 'a') & (data[3] == 'b') :    #0xAB  请求升级
      Send_num1 = str(data)[4:6]   #保留
      Send_num1 = int(Send_num1,16)  #保留
