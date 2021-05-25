@@ -7,3 +7,4 @@ def getIP():
     hostname=socket.gethostname()#获取本机IP
     IP=socket.gethostbyname(hostname)
     return IP
+print (getIP())

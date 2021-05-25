@@ -1,3 +1,4 @@
+
 # 使用psutil来判断
 import psutil
 import os
@@ -5,13 +6,13 @@ import struct
 import binascii
 import signal
 
-py_path = 'TCP_sever.py'
+name = 'TCP_sever'
 
 
 def verification(name):
     for pid in psutil.pids():
         p = psutil.Process(pid)
-        if p.name() == "py.exe" and len(p.cmdline()) > 1 and name+'.py' in p.cmdline()[1]:
+        if p.name() == "python3.exe" and len(p.cmdline()) > 1 and name+'.py' in p.cmdline()[1]:
         #if p.name() == "py.exe" and len(p.cmdline()) > 1 
             return 1
 def restartfunction(name):
@@ -19,20 +20,18 @@ def restartfunction(name):
 		print('running')
 	else:
 		print('restart')
-		os.popen(py_path)
+		#os.popen(name+'.py')
 		#os.system(name+'.py')
-		#from TCP import *
+		import TCP_sever
 		#with open(name+'.py','r',encoding='utf-8') as f:
 		    #exec(f.read())
 try:
-	restartfunction(py_path)
+	restartfunction(name)
 except Exception as e:
 	raise e
 
 
 
-
-#os.popen(py_path)
 
 
 

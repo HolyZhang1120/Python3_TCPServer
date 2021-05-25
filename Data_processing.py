@@ -46,12 +46,10 @@ def upgrade_flag(filepath):
     print(file_size1)
     if (crc32_file == crc32_file1) & (file_size == file_size1) :
         Flag = 0
-        print('11')
     else :
         ini_data(0,16,crc32_file,4)
         ini_data(0,20,file_size,4)
         Flag = 1
-        print('21')
 
 def upgrade_function(data,size,BUFSIZ):
   msg = '00'

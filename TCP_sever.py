@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# -*-coding:utf-8 -*-
+# coding:utf-8
 from socket import *
 from Data_processing import *
 import binascii
@@ -17,13 +17,13 @@ from crc32 import crc32
 import os
 
 COD = 'utf-8'
-#HOST = '192.168.2.104' # 主机ip
+HOST = '192.168.2.100' # 主机ip
 PORT = 25052 # 软件端口号
 BUFSIZ = 1024*2
 BUFSIZ1 = BUFSIZ*3
 SIZE =10
 filepath='RTCNew.bin'
-ADDR = (getIP(), PORT)
+ADDR = (HOST, PORT)
 print (ADDR)
 tcpS = socket(AF_INET, SOCK_STREAM) # 创建socket对象
 tcpS.setsockopt(SOL_SOCKET,SO_REUSEADDR,1) #加入socket配置，重用ip和端口
@@ -77,7 +77,7 @@ while True:
         try:
             if (data[0] == 'a') & (data[1] == 'a') :    #0xAA
                 msg_data = upgrade_function(data,size,filepath)                                            
-            if (data[0] == 'b') & (data[1] == 'b') :    #0xAA
+            if (data[0] == 'b') & (data[1] == 'b') :    #0xAB
                 msg_data = picture_function(data,size,BUFSIZ) 
             
         except Exception as e:
